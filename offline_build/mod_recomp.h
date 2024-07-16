@@ -91,7 +91,7 @@ static inline gpr do_lwl(uint8_t* rdram, gpr initial_value, gpr offset, gpr reg)
 static inline gpr do_lwr(uint8_t* rdram, gpr initial_value, gpr offset, gpr reg) {
     // Calculate the overall address
     gpr address = (offset + reg);
-    
+
     // Load the aligned word
     gpr word_address = address & ~0x3;
     uint32_t loaded_value = MEM_W(0, word_address);
@@ -137,7 +137,7 @@ static inline void do_swr(uint8_t* rdram, gpr offset, gpr reg, gpr val) {
 
 #define S32(val) \
     ((int32_t)(val))
-    
+
 #define U32(val) \
     ((uint32_t)(val))
 

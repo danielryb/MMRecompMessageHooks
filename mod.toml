@@ -5,10 +5,25 @@
 
 # Unique ID of this mod. Pick something long enough that it'll never be the same as any other mod.
 # The name displayed in the mod management menu is separate from this so this doesn't need to be human readable.
-id = "mm_message_hooks"
+id = "mm_recomp_message_hooks"
 
 # Version of this mod.
 version = "1.0.0"
+
+# The name that will show up for this mod in the mod menu. This should be human readable.
+display_name = "Message Hooks"
+
+# The description that will show up when this mod is displayed in the mod menu. This should be human readable.
+description =  """
+This is a dependency mod.
+
+This mod provides a hook inside Message_Update for use in other mods.
+
+For more details, see https://github.com/danielryb/MMRecompMessageHooks"""
+
+# A short description that will show up in this mod's entry in the mod list. This should be human readable and kept short
+# to prevent it from being cut off due to the limited space.
+short_description = "Dependency."
 
 # Authors of this mod.
 authors = [ "danielryb" ]
@@ -36,6 +51,9 @@ native_libraries = [
 
 # Input elf file to generate a mod from.
 elf_path = "build/mod.elf"
+
+# Output mod filename.
+mod_filename = "mm_recomp_message_hooks"
 
 # Reference symbol files.
 func_reference_syms_file = "Zelda64RecompSyms/mm.us.rev1.syms.toml"
