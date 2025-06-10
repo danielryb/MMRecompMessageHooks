@@ -33,15 +33,18 @@ RECOMP_DECLARE_EVENT(mh_on_Message_DrawMain(PlayState* play, Gfx** gfxP))
 
 #undef DEFINE_MSGMODE
 
-bool Message_Update_earlyReturn;
-bool Message_DrawMain_earlyReturn;
+bool earlyReturn;
+
+RECOMP_EXPORT void mh_set_return_flag(void) {
+    earlyReturn = true;
+}
 
 RECOMP_EXPORT void mh_Message_Update_set_return_flag(void) {
-    Message_Update_earlyReturn = true;
+    mh_set_return_flag();
 }
 
 RECOMP_EXPORT void mh_Message_DrawMain_set_return_flag(void) {
-    Message_DrawMain_earlyReturn = true;
+    mh_set_return_flag();
 }
 
 extern u8 D_801C6A70;
@@ -173,7 +176,7 @@ RECOMP_PATCH void Message_Update(PlayState* play) {
     }
 
     // @mod Add hook to Message_Update.
-    Message_Update_earlyReturn = false;
+    earlyReturn = false;
 
     mh_on_Message_Update(play);
 
@@ -189,7 +192,7 @@ RECOMP_PATCH void Message_Update(PlayState* play) {
 
 #undef DEFINE_MSGMODE
 
-    if (Message_Update_earlyReturn) {
+    if (earlyReturn) {
         return;
     }
 
@@ -960,13 +963,13 @@ RECOMP_PATCH void Message_DrawMain(PlayState* play, Gfx** gfxP) {
         }
 
         // @mod Add hook to Message_DrawMain.
-        Message_DrawMain_earlyReturn = false;
+        earlyReturn = false;
 
         mh_on_Message_DrawMain(play, gfxP);
 
 #define DEFINE_MSGMODE(name, _enumValue, _debugName)    \
     case _enumValue:                                    \
-        mh_on_Message_DrawMain_ ## name(play, gfxP);      \
+        mh_on_Message_DrawMain_ ## name(play, gfxP);    \
         break;
 
         switch (msgCtx->msgMode) {
@@ -975,7 +978,7 @@ RECOMP_PATCH void Message_DrawMain(PlayState* play, Gfx** gfxP) {
 
 #undef DEFINE_MGSMODE
 
-        if (Message_DrawMain_earlyReturn) {
+        if (earlyReturn) {
             return;
         }
 
