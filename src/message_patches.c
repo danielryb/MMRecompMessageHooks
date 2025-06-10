@@ -18,7 +18,20 @@
 #include "z64save.h"
 
 RECOMP_DECLARE_EVENT(mh_on_Message_Update(PlayState* play))
+
+#define DEFINE_MSGMODE(name, _enumValue, _debugName) RECOMP_DECLARE_EVENT(mh_on_Message_Update_ ## name (PlayState* play))
+
+#include "tables/msgmode_table.h"
+
+#undef DEFINE_MSGMODE
+
 RECOMP_DECLARE_EVENT(mh_on_Message_DrawMain(PlayState* play, Gfx** gfxP))
+
+#define DEFINE_MSGMODE(name, _enumValue, _debugName) RECOMP_DECLARE_EVENT(mh_on_Message_DrawMain_ ## name (PlayState* play, Gfx** gfxP))
+
+#include "tables/msgmode_table.h"
+
+#undef DEFINE_MSGMODE
 
 bool Message_Update_earlyReturn;
 bool Message_DrawMain_earlyReturn;
@@ -163,6 +176,18 @@ RECOMP_PATCH void Message_Update(PlayState* play) {
     Message_Update_earlyReturn = false;
 
     mh_on_Message_Update(play);
+
+
+#define DEFINE_MSGMODE(name, _enumValue, _debugName)    \
+    case _enumValue:                                    \
+        mh_on_Message_Update_ ## name(play);            \
+        break;
+
+    switch (msgCtx->msgMode) {
+#include "tables/msgmode_table.h"
+    }
+
+#undef DEFINE_MSGMODE
 
     if (Message_Update_earlyReturn) {
         return;
@@ -938,6 +963,17 @@ RECOMP_PATCH void Message_DrawMain(PlayState* play, Gfx** gfxP) {
         Message_DrawMain_earlyReturn = false;
 
         mh_on_Message_DrawMain(play, gfxP);
+
+#define DEFINE_MSGMODE(name, _enumValue, _debugName)    \
+    case _enumValue:                                    \
+        mh_on_Message_DrawMain_ ## name(play, gfxP);      \
+        break;
+
+        switch (msgCtx->msgMode) {
+#include "tables/msgmode_table.h"
+        }
+
+#undef DEFINE_MGSMODE
 
         if (Message_DrawMain_earlyReturn) {
             return;
